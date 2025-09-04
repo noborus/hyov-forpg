@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/noborus/hyov-forpg/internal"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,9 +33,18 @@ func main() {
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("$HOME/.config/hyov-forpg")
-	viper.ReadInConfig()
+	if err := viper.ReadInConfig(); err != nil {
+		// Notify user if config file is not found or cannot be read
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			// Config file not found; ignore error if not required
+			fmt.Fprintf(os.Stderr, "Error reading config file: %v\n", err)
+			return
+		}
+	}
 	viper.BindPFlag("db.connection", rootCmd.Flags().Lookup("connection"))
 	viper.SetDefault("db.connection", "")
 
-	_ = rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, "Error:", err.Error())
+	}
 }

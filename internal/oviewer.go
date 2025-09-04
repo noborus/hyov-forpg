@@ -21,6 +21,7 @@ func setupOviewer(r io.Reader) (*oviewer.Root, error) {
 	return ov, nil
 }
 
+// configureOviewer sets up the oviewer configuration.
 func configureOviewer(ov *oviewer.Root) {
 	header := 1
 	delimiter := "|"
@@ -35,5 +36,16 @@ func configureOviewer(ov *oviewer.Root) {
 		ColumnRainbow:   &columnRainbow,
 		Align:           &align,
 	}
+
+	headerStyle := oviewer.OVStyle{
+		Background:     "#1a1a4a",
+		Bold:           true,
+		Underline:      true,
+		UnderlineColor: "red",
+	}
+	ov.Config.General.Style = oviewer.StyleConfig{
+		Header: &headerStyle,
+	}
+
 	ov.SetConfig(ov.Config)
 }

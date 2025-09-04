@@ -78,6 +78,7 @@ func Run(query string, nopager bool) {
 		}
 		log.Fatalf("oviewer run failed: %v", err)
 	}
+	cancel()
 }
 
 func print(ctx context.Context, w io.WriteCloser, rows *sql.Rows) {
